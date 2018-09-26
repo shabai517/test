@@ -9,7 +9,7 @@ Vue.use(Router)
 
 export default new Router({
   //mode: 'history',
-  //base: location.hostname.match(/localhost/)?'':'/test/',
+  base: location.hostname.match(/localhost/)?'':'/test/',
   routes: [
     {
       path: '/',
