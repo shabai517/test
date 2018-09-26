@@ -4,6 +4,8 @@ import Index from '@/components/Index'
 
 import Login from '@/components/Login'
 import Containerdetails from '@/components/Containerdetails'
+import NotFound from '@/components/NotFound'
+
 
 Vue.use(Router)
 
@@ -25,6 +27,11 @@ export default new Router({
       path: '/containerdetails',
       name: 'Containerdetails',
       component: Containerdetails
-    }
+    },
+    {
+      path:'*',
+      name: 'NotFound',
+      component: NotFound,
+    },
   ]
 })
