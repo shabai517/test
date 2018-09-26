@@ -13,6 +13,7 @@
   "postcss": {
     "/*must be here for iview.css import*/": "/*must be here for iview.css import*/"
   },
+  "homepage": "https://github.com/shabai517/test" ,
   "dependencies": {
     "iview": "^2.14.3",
     "less": "^3.0.4",
