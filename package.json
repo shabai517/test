@@ -13,7 +13,6 @@
   "postcss": {
     "/*must be here for iview.css import*/": "/*must be here for iview.css import*/"
   },
-  "homepage": "https://github.com/shabai517/test" ,
   "dependencies": {
     "iview": "^2.14.3",
     "less": "^3.0.4",
@@ -51,7 +50,6 @@
     "shelljs": "^0.7.6",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
-    "vue-gh-pages": "^1.19.0",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
