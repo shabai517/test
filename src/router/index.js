@@ -8,7 +8,8 @@ import Containerdetails from '@/components/Containerdetails'
 Vue.use(Router)
 
 export default new Router({
-  //mode: 'history',
+  mode: 'history',
+  base: location.hostname.match(/localhost/)?'':'/test/',
   routes: [
     {
       path: '/',
