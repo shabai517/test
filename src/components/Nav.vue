@@ -1,6 +1,6 @@
 <template>
     <Menu mode="horizontal" active-name="1">
-        <a class="logo"><img src="@/assets/logo/biocontainers-logo.png" width="40" height="40">BioContainers Registry UI</a>
+        <a class="logo"><img src="../assets/logo/biocontainers-logo.png" width="40" height="40">BioContainers Registry UI</a>
         <div class="menu">
             <MenuItem name="1">
                 <Icon type="ios-home-outline"></Icon>
