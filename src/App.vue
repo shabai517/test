@@ -14,12 +14,13 @@ export default {
   },
 
   mounted: function(){
+    console.log('this.$router',this.$router.options.base);
         var redirect = sessionStorage.redirect;
         console.log('redirect',redirect);
         delete sessionStorage.redirect;
         if (redirect && redirect != location.href) {
           console.log('location.origin',location.origin);
-          this.$router.replace({ path: redirect.replace(location.origin,'') });
+          this.$router.replace({ path: redirect.replace(location.origin+this.$router.options.base,'/') });
           //history.replaceState(null, null, redirect);
         }
   },
