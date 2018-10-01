@@ -18,9 +18,8 @@ export default {
         console.log('redirect',redirect);
         delete sessionStorage.redirect;
         if (redirect && redirect != location.href) {
-          let temp = location.pathname.split('/')[2];
-          console.log('temp',temp);
-          this.$router.replace({ path: temp });
+          console.log('location.origin',location.origin);
+          this.$router.replace({ path: redirect.replace(location.origin,'') });
           //history.replaceState(null, null, redirect);
         }
   },
