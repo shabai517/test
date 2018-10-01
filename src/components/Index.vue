@@ -6,6 +6,7 @@
               <p class="description">XXXXXXXXXXXXXX XXXXXXXXXXXX XXXXXXXXX XXXXXXX</p> 
           </div>
       </div>
+      <div class="triangle triangle-down"></div>
       <div class="content content-wrapper">
           <h1>Available Containers</h1>
           <div class="search-wrapper">
@@ -286,6 +287,20 @@ export default {
       background-color: #eb8c1f;
       color: #ffffff;
       padding: 3rem 0;
+    }
+    .triangle-down:before{
+     
+      /*background-image:url('static/triangle.svg');*/
+    }
+    .triangle:before{
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      content: '';
+      display: block;
+      width: 100%;
+      left: 0;
+      height: 30px;
+      /*background-image:url('static/triangle.svg');*/
     }
     .content-wrapper{
       width: 100%;
