@@ -7,7 +7,7 @@
           </div>
       </div>
       <div class="triangle triangle-down"></div>
-      <div class="content content-wrapper">
+      <div class="content">
           <h1>Available Containers</h1>
           <div class="search-wrapper">
             <Input v-model="keywords" icon="ios-search" placeholder="Search" style="width:100%"></Input>
@@ -24,7 +24,7 @@
               </div>
           </div>
           <div class="container-wrapper">
-              <Card style="width:100%" class="card">
+              <Card class="card">
                   <p slot="title">Containers Update Statistics</p>
                   <p slot="extra">
                     <Tooltip>
@@ -46,7 +46,7 @@
                       Not yet
                   </div>
               </Card>
-              <Card style="width:100%" class="card">
+              <Card class="card">
                   <p slot="title">Containers Update Statistics</p>
                   <p slot="extra">
                     <Tooltip>
@@ -68,7 +68,29 @@
                       Not yet
                   </div>
               </Card>
-              <Card style="width:100%" class="card">
+              <Card class="card">
+                  <p slot="title">Containers Update Statistics</p>
+                  <p slot="extra">
+                    <Tooltip>
+                        <Icon type="ios-film-outline"></Icon>
+                        <div class="tooltip-content" slot="content">
+                            Species distribution for all the PSMs within the cluster.
+                        </div>
+                    </Tooltip>
+                  </p>
+                  <div class="description-wrapper">
+                    XXXX XXXXXX XXXXX XXXX XXXX XXXX  XXXX XX
+                  </div>
+                  <div class="tag-wrapper">
+                      <Tag color="default">default</Tag>
+                      <Tag color="default">default</Tag>
+                      <Tag color="default">default</Tag>
+                  </div>
+                  <div class="statue-wrapper">
+                      Not yet
+                  </div>
+              </Card>
+              <Card class="card">
                   <p slot="title">Containers Update Statistics</p>
                   <p slot="extra">
                     <Tooltip>
@@ -303,11 +325,14 @@ export default {
       /*background-image:url('static/triangle.svg');*/
     }
     .content-wrapper{
-      width: 100%;
+      width: 80%;
       padding-right: 15px;
       padding-left: 15px;
       margin-right: auto;
       margin-left: auto;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
     }
     .title{
       font-size: 4.5rem;
@@ -320,10 +345,12 @@ export default {
     }
     .content{
       min-height: 300px;
-      margin-top: 1rem;
       margin-bottom: 6rem;
       font-size: 1.1rem;
       line-height: 1.6;
+      width: 80%;
+      margin-right: auto;
+      margin-left: auto;
     }
     .content h1{
       border-bottom: 1px solid #e4973e;
@@ -332,8 +359,7 @@ export default {
       color: #eb8c1f;
     }
     .container-wrapper{
-      padding: 20px 0;
-      margin-top: 20px;
+      margin-top: 30px;
     }
     .description-wrapper{
       margin-bottom: 5px;
@@ -342,7 +368,12 @@ export default {
       margin-bottom: 5px;
     }
     .card{
-      margin-bottom: 20px;
+      display: inline-block;
+      margin: 0 15px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      transition: all 0.15s ease-out;
+      -webkit-transition: all 0.15s ease-out;
     }
     .tooltip-content{
         white-space: normal;
@@ -352,27 +383,44 @@ export default {
       text-align: center;
       font-size: 12px;
     }
-    @media (min-width: 576px){
-      .content-wrapper {
-          max-width: 540px;
+    @media (max-width: 700px) { 
+      .card{ 
+        width: calc((100% - 0px) / 1 - 3px);
+        margin-left: 0 !important;
+        margin-right: 0 !important;
       }
     }
-    @media (min-width: 768px){
-      .content-wrapper {
-          max-width: 720px;
+    @media (max-width: 1015px) and (min-width: 701px){ 
+      .card{ 
+        width: calc((100% - 60px) / 2 - 3px);
+
+      }
+      .container-wrapper{
+        margin-left: -15px;
+        margin-right: -15px;
       }
     }
-    @media (min-width: 992px){
-      .content-wrapper {
-          max-width: 960px;
+    @media (max-width: 1510px) and (min-width: 1016px){ 
+      .card{ 
+        width: calc((100% - 90px) / 3 - 4px);
+      }
+      .container-wrapper{
+        margin-left: -15px;
+        margin-right: -15px;
       }
     }
-    @media (min-width: 1200px){
-      .content-wrapper {
-          max-width: 1140px;
+    @media (max-width: 3910px) and (min-width: 1511px){ 
+      .card{ 
+        width: calc((100% - 120px) / 4 - 4px);
+      }
+      .container-wrapper{
+        margin-left: -15px;
+        margin-right: -15px;
       }
     }
+   
 </style>
+
 <style>
     .update-statistics .ivu-card-head{
       background-color: #d9edf7 !important;
