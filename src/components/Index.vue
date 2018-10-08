@@ -12,12 +12,20 @@
           <div class="search-wrapper">
             <Input v-model="keywords" icon="ios-search" placeholder="Search" style="width:100%"></Input>
           </div>
-          <div class="filter-wrapper">
-              <div class="filter">
-                    <span class="name">Filters:</span>
-                    <ButtonGroup>
-                        <Button v-for="(item ,index) in filters" :type="item.type" :key="index" @click="filterClick(index)">{{item.name}}</Button>
-                    </ButtonGroup>
+          <div class="search-options-wrapper">
+              <div class="filter-wrapper">
+                  <div class="filter">
+                        <span class="name">Filters:</span>
+                        <ButtonGroup>
+                            <Button v-for="(item ,index) in filters" :type="item.type" :key="index" @click="filterClick(index)">{{item.name}}</Button>
+                        </ButtonGroup>
+                  </div>
+                  <div class="sort">
+                        <span class="name">Sort:</span>
+                        <ButtonGroup>
+                            <Button v-for="(item ,index) in sorts" :type="item.type" :key="index" @click="sortClick(index)">{{item.name}}</Button>
+                        </ButtonGroup>
+                  </div>
               </div>
               <div class="search-button-wrapper">
                   <Button type="primary" @click="search">Search</Button>
@@ -235,7 +243,21 @@ export default {
                 name:'Confirm',
                 type:'default',
             }
-        ]
+        ],
+        sorts:[
+            {
+                name:'sort1',
+                type:'primary',
+            },
+            {
+                name:'sort2',
+                type:'default',
+            },
+            {
+                name:'sort3',
+                type:'default',
+            }
+        ],
     }
   },
   methods:{
@@ -267,6 +289,14 @@ export default {
             this.filters[index].type = this.filters[index].type == 'primary' ? 'default' : 'primary';
         }
     },
+    sortClick(index){
+          for(let i in this.sorts){
+              if(i == index)
+                this.sorts[i].type = 'primary';
+              else
+                this.sorts[i].type = 'default';
+          }
+    },
     search(){
         console.log('search');
     }
@@ -284,11 +314,17 @@ export default {
       text-align: center;
       margin: 50px auto 0 auto;
     }
-    .filter-wrapper{
+    .search-options-wrapper{
       margin: 20px auto 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
+    }
+    .filter-wrapper{
+      display: flex;
+    }
+    .filter-wrapper .sort{
+      margin-left: 10px;
     }
     .filter-wrapper .name{
       font-size: 0.875rem
@@ -359,7 +395,7 @@ export default {
       color: #eb8c1f;
     }
     .container-wrapper{
-      margin-top: 30px;
+      margin-top: 50px;
     }
     .description-wrapper{
       margin-bottom: 5px;
