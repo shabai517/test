@@ -1,7 +1,7 @@
 <template>
     <div class="nav-container">
         <Menu mode="horizontal" active-name="1" @on-select="menuSlect">
-            <a class="logo"><img src="static/logo/biocontainers-logo.png" width="40" height="40">BioContainers Registry UI</a>
+            <a class="logo" @click="gotoHome"><img src="static/logo/biocontainers-logo.png" width="40" height="40">BioContainers Registry UI</a>
             <div class="menu">
                 <MenuItem name="statslink">
                    <Icon type="ios-home-outline"></Icon>
@@ -31,15 +31,19 @@
             }
         },
         methods:{
+            gotoHome(){
+                this.$router.push({name:'Index'});
+            },
             menuSlect(name){
                 switch(name){
                   case 'statslink':
-                    this.$router.push({name:'index'});
+                    console.log(123);
+                    this.$router.push({name:'MappingData'});
                     //this.activeName = 'index';
                   break;
 
                   case 'multipackage':
-                    window.open('https://github.com/BioContainers/multi-package-containers');
+                    window.open('http://biocontainers.pro/multi-package-containers/');
                     //this.activeName = 'discover';
                   break;
                   case 'biocontainers':
