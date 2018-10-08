@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'Containerdetails',
+  name: 'ContainerDetails',
   data () {
     return {
         keywords:'',
@@ -121,7 +121,7 @@ export default {
   },
   methods:{
     rowClick(){
-        //this.$router.push({name:'containerdetails',params:{id:row.ID}});
+        //this.$router.push({name:'ContainerDetails',params:{id:row.ID}});
     },
   	test(){
   		this.$http
