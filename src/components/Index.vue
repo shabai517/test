@@ -266,11 +266,11 @@ export default {
         this.$router.push({name:'Containerdetails',params:{id:row.ID}});
     },
   	test(){
+
   		this.$http
-            .get('/api/get')
+            .get('http://api.biocontainers.pro/api/v2/metadata')
             .then(function(res){
-              console.log(res);
-                console.log(123);
+              console.log(res.body);
             },function(err){
 
             });
@@ -302,7 +302,7 @@ export default {
     }
   },
   mounted(){
-  	//this.test();
+  	this.test();
   }
 }
 </script>
@@ -419,14 +419,14 @@ export default {
       text-align: center;
       font-size: 12px;
     }
-    @media (max-width: 700px) { 
+    @media (max-width: 840px) { 
       .card{ 
         width: calc((100% - 0px) / 1 - 3px);
         margin-left: 0 !important;
         margin-right: 0 !important;
       }
     }
-    @media (max-width: 1015px) and (min-width: 701px){ 
+    @media (max-width: 1015px) and (min-width: 841px){ 
       .card{ 
         width: calc((100% - 60px) / 2 - 3px);
 
