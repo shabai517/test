@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store/store.js'
 import iView from 'iview';
 import './assets/iviewtheme/index.less';
 //import 'iview/dist/styles/iview.css';//we could use our own theme directory:import './assets/my-theme/index.less'; 'index.css' need to be created properly according to iview instruction.
@@ -43,6 +44,7 @@ Vue.component('chart', ECharts)
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
