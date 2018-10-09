@@ -6,6 +6,7 @@ import Login from '@/components/Login'
 import ContainerDetails from '@/components/ContainerDetails'
 import NotFound from '@/components/NotFound'
 import MappingData from '@/components/MappingData'
+import Multipackage from '@/components/Multipackage'
 
 Vue.use(Router)
 
@@ -32,6 +33,11 @@ export default new Router({
       path: '/mappingdata',
       name: 'MappingData',
       component: MappingData
+    },
+    {
+      path: '/multipackage',
+      name: 'Multipackage',
+      component: Multipackage
     },
     {
       path:'*',
