@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/components/Index'
 
-import Login from '@/components/Login'
 import ContainerDetails from '@/components/ContainerDetails'
 import NotFound from '@/components/NotFound'
 import MappingData from '@/components/MappingData'
@@ -18,11 +17,6 @@ export default new Router({
       path: '/',
       name: 'Index',
       component: Index
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
     },
     {
       path: '/containerdetails',

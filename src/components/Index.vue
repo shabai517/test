@@ -32,97 +32,29 @@
               </div>
           </div>
           <div class="container-wrapper">
-              <Card class="card">
-                  <p slot="title">Containers Update Statistics</p>
+              <Card v-for="item in cardList" class="card">
+                  <p slot="title">{{item.title}}</p>
                   <p slot="extra">
                     <Tooltip>
                         <Icon type="ios-film-outline"></Icon>
                         <div class="tooltip-content" slot="content">
-                            Species distribution for all the PSMs within the cluster.
+                            {{item.content}}
                         </div>
                     </Tooltip>
                   </p>
                   <div class="description-wrapper">
-                    XXXX XXXXXX XXXXX XXXX XXXX XXXX  XXXX XX
+                    {{item.description}}
                   </div>
-                  <div class="tag-wrapper">
-                      <Tag color="default">default</Tag>
-                      <Tag color="default">default</Tag>
-                      <Tag color="default">default</Tag>
+                  <div v-for="tag in item.tags" class="tag-wrapper">
+                      <Tag color="default">{{tag}}</Tag>
                   </div>
-                  <div class="statue-wrapper">
-                      Not yet
-                  </div>
-              </Card>
-              <Card class="card">
-                  <p slot="title">Containers Update Statistics</p>
-                  <p slot="extra">
-                    <Tooltip>
-                        <Icon type="ios-film-outline"></Icon>
-                        <div class="tooltip-content" slot="content">
-                            Species distribution for all the PSMs within the cluster.
-                        </div>
-                    </Tooltip>
-                  </p>
-                  <div class="description-wrapper">
-                    XXXX XXXXXX XXXXX XXXX XXXX XXXX  XXXX XX
-                  </div>
-                  <div class="tag-wrapper">
-                      <Tag color="default">default</Tag>
-                      <Tag color="default">default</Tag>
-                      <Tag color="default">default</Tag>
-                  </div>
-                  <div class="statue-wrapper">
-                      Not yet
-                  </div>
-              </Card>
-              <Card class="card">
-                  <p slot="title">Containers Update Statistics</p>
-                  <p slot="extra">
-                    <Tooltip>
-                        <Icon type="ios-film-outline"></Icon>
-                        <div class="tooltip-content" slot="content">
-                            Species distribution for all the PSMs within the cluster.
-                        </div>
-                    </Tooltip>
-                  </p>
-                  <div class="description-wrapper">
-                    XXXX XXXXXX XXXXX XXXX XXXX XXXX  XXXX XX
-                  </div>
-                  <div class="tag-wrapper">
-                      <Tag color="default">default</Tag>
-                      <Tag color="default">default</Tag>
-                      <Tag color="default">default</Tag>
-                  </div>
-                  <div class="statue-wrapper">
-                      Not yet
-                  </div>
-              </Card>
-              <Card class="card">
-                  <p slot="title">Containers Update Statistics</p>
-                  <p slot="extra">
-                    <Tooltip>
-                        <Icon type="ios-film-outline"></Icon>
-                        <div class="tooltip-content" slot="content">
-                            Species distribution for all the PSMs within the cluster.
-                        </div>
-                    </Tooltip>
-                  </p>
-                  <div class="description-wrapper">
-                    XXXX XXXXXX XXXXX XXXX XXXX XXXX  XXXX XX
-                  </div>
-                  <div class="tag-wrapper">
-                      <Tag color="default">default</Tag>
-                      <Tag color="default">default</Tag>
-                      <Tag color="default">default</Tag>
-                  </div>
-                  <div class="statue-wrapper">
-                      Not yet
+                  <div class="state-wrapper">
+                      {{item.state}}
                   </div>
               </Card>
           </div>
           <div class="page-wrapper">
-              <Page :total="40" size="small" show-elevator show-sizer />
+              <Page :total="total" :current="current" :page-size="pageSize" size="small" show-elevator show-sizer @on-change="pageChange" @on-page-size-change="pageSizeChange"/>
           </div>
       </div>
       <!--
@@ -155,6 +87,10 @@ export default {
   data () {
     return {
         keywords:'',
+        total:'',
+        current:1,
+        pageSize:30,
+        cardList:[],
         resultsTableCol:[
             {
                 title: 'Container',
@@ -267,11 +203,28 @@ export default {
         this.$router.push({name:'Containerdetails',params:{id:row.ID}});
     },
   	test(){
-
+      console.log('this.$store.state.baseApiURL',this.$store)
   		this.$http
-            .get(this.$store.state.baseApiURL + '/api/v2/metadata')
+            .get(this.$store.state.baseApiURL + '/api/v2/tools')
             .then(function(res){
-              console.log(res.body);
+              var item = {
+                title:'container title',
+                content:'container content',
+                description:'description, description, description, description, description',
+                tags:['tag1','tag2','tag2'],
+                state:'Not yet'
+              };
+              for(let i=0; i<4; i++)
+                this.cardList.push(item)
+              this.total = res.body.length;
+              for(let i=0; i<30; i++){
+                console.log(res.body[i])
+                var item = {
+                  title:res.body[i].toolname,
+                  description:res.body[i].author,
+                }
+                this.cardList.push(item)
+              }
             },function(err){
 
             });
@@ -300,6 +253,12 @@ export default {
     },
     search(){
         console.log('search');
+    },
+    pageChange(page){
+      console.log('page',page);
+    },
+    pageSizeChange(pageSize){
+      console.log('pageSize',pageSize);
     }
   },
   mounted(){
@@ -400,9 +359,11 @@ export default {
     }
     .description-wrapper{
       margin-bottom: 5px;
+      white-space: normal;
     }
     .tag-wrapper{
       margin-bottom: 5px;
+      display: inline-block;
     }
     .card{
       display: inline-block;
