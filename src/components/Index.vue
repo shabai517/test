@@ -3,12 +3,12 @@
       <div class="banner">
           <div class="content-wrapper">
               <h1 class="title">Bio Containers</h1>
-              <p class="description">XXXXXXXXXXXXXX XXXXXXXXXXXX XXXXXXXXX XXXXXXX</p> 
+              <p class="description">Subtitle</p> 
           </div>
       </div>
       <div class="triangle triangle-down"></div>
       <div class="content">
-          <h1>Available Containers</h1>
+          <h1>Search</h1>
           <div class="search-wrapper">
             <Input v-model="keywords" icon="ios-search" placeholder="Search" style="width:100%"></Input>
           </div>
@@ -33,7 +33,7 @@
           </div>
           <div class="container-wrapper">
               <Card v-for="item in cardList" class="card">
-                  <p slot="title">{{item.title}}</p>
+                  <p slot="title">{{item.toolname}}</p>
                   <p slot="extra">
                     <Tooltip>
                         <Icon type="ios-film-outline"></Icon>
@@ -207,21 +207,14 @@ export default {
   		this.$http
             .get(this.$store.state.baseApiURL + '/api/v2/tools')
             .then(function(res){
-              var item = {
-                title:'container title',
-                content:'container content',
-                description:'description, description, description, description, description',
-                tags:['tag1','tag2','tag2'],
-                state:'Not yet'
-              };
-              for(let i=0; i<4; i++)
-                this.cardList.push(item)
               this.total = res.body.length;
               for(let i=0; i<30; i++){
                 console.log(res.body[i])
                 var item = {
-                  title:res.body[i].toolname,
-                  description:res.body[i].author,
+                  toolname:res.body[i].toolname,
+                  description:res.body[i].description,
+                  tags:['tag1','tag2','tag2'],
+                  state:'Not yet'
                 }
                 this.cardList.push(item)
               }
@@ -369,6 +362,7 @@ export default {
       display: inline-block;
       margin: 0 15px;
       margin-bottom: 30px;
+      min-height: 200px;
       overflow: hidden;
       transition: all 0.15s ease-out;
       -webkit-transition: all 0.15s ease-out;
