@@ -149,6 +149,7 @@
 </template>
 
 <script>
+import store from "@/store/store.js"
 export default {
   name: 'Index',
   data () {
@@ -268,7 +269,7 @@ export default {
   	test(){
 
   		this.$http
-            .get('http://api.biocontainers.pro/api/v2/metadata')
+            .get(this.$store.state.baseApiURL + '/api/v2/metadata')
             .then(function(res){
               console.log(res.body);
             },function(err){
