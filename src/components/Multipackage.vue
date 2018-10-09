@@ -1,5 +1,11 @@
 <template>
   <div class="multipackage-container">
+    <div class="banner">
+          <div class="content-wrapper">
+              <h1 class="title">Multi-package Containers</h1>
+              <p class="description">Combine several conda packages into one Docker container.</p> 
+          </div>
+      </div>
       <iframe class="lorikeet-iframe" src="http://biocontainers.pro/multi-package-containers/" scrolling="no"></iframe>
   </div>
 </template>
@@ -10,6 +16,7 @@ export default {
   data () {
     return {
         keywords:'',
+        
         resultsTableCol:[
             {
                 title: 'Container',
@@ -151,6 +158,25 @@ export default {
         height: 100%;
         border-width:0;
     }
-
+    .banner{
+      background-color: #eb8c1f;
+      color: #ffffff;
+      padding: 3rem 0;
+    }
+    .content-wrapper{
+      width: 80%;
+      padding-right: 15px;
+      padding-left: 15px;
+      margin-right: auto;
+      margin-left: auto;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+    }
+    .title{
+      font-size: 4.5rem;
+      font-weight: 300;
+      line-height: 1.2;
+    }
 </style>
 
