@@ -38,7 +38,9 @@
                   <p slot="title">{{item.toolname}}</p>
                   <p slot="extra">
                     <Tooltip>
-                        <Icon type="ios-film-outline"></Icon>
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icon-icon_docker"></use>
+                        </svg>
                         <div class="tooltip-content" slot="content">
                             {{item.content}}
                         </div>
@@ -237,7 +239,7 @@ export default {
         else if(this.filter == 'ID')
           query.id = this.keywords;
         else if(this.filter == 'Name')
-          query.name = this.keywords;
+          query.toolname = this.keywords;
         else if(this.filter == 'All')
           query={}
 
@@ -246,7 +248,8 @@ export default {
             .then(function(res){
               //this.total = res.body.length;
               this.total = 1000;
-              for(let i=0; i<30; i++){
+              let tempLength = res.body.length>30?30:res.body.length;
+              for(let i=0; i<tempLength; i++){
                 console.log(res.body[i])
                 var item = {
                   toolname:res.body[i].toolname.toUpperCase(),
