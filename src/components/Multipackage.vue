@@ -13,7 +13,7 @@
                   <div class="search-wrapper">
                     <Input v-model="keywords" icon="ios-search" placeholder="Search" style="width:100%"></Input>
                   </div>
-                  <Table stripe :columns="resultsTableCol" :data="resutls"></Table>
+                  <Table stripe :columns="resultsTableCol" :data="resutls" :loading="loading"></Table>
                   <div class="page-wrapper">
                       <Page :total="total" :current="current" :page-size="pageSize" size="small" show-elevator show-sizer @on-change="pageChange" @on-page-size-change="pageSizeChange"/>
                   </div>
@@ -25,7 +25,7 @@
                   <Alert v-if="containerRepeated" type="error">{{containerRepaetedName}} Container Repeated</Alert>
                   <Table stripe :columns="selectedPackagesTableCol" :data="selectedPackagesResutls"></Table>
                   <div class="button-wrapper">
-                      <Button type="error">Clear</Button>
+                      <Button type="error" @click="selectedPackagesClear">Clear</Button>
                   </div>
                   <div class="details-wrapper">
                       <p>To create a container, please add the following string to this file as a pull request:</p>
@@ -38,7 +38,8 @@
                       </div>
                   </div>
                   <div class="button-wrapper">
-                      <Button type="success">Download</Button>
+                      <!--<a class="download-button" :href="downloadHref" :download="downloadName">-->
+                      <Button type="success" @click="download">Download</Button>
                   </div>
               </Card>
           </div>
@@ -50,30 +51,42 @@
 </template>
 
 <script>
+import { each, union } from 'lodash';
+import { createHash } from 'crypto';
+
 export default {
   name: 'ContainerDetails',
+  
   data () {
     return {
         keywords:'',
         total:5598,
         current:1,
-        pageSize:20, 
+        pageSize:10, 
+        loading:true,
+        content:'',
+        containerName:'',
         containerRepeated:false,
         containerRepaetedName:'',
+        //downloadHref:'',
+        //downloadName:'',
         createContainerValue: '2pg_cartesian=1.0.1,_license=1.1,_nb_ext_conf=0.3.0,abawaca=1.00,abricate=0.4,abstract-rendering=0.5.1,abundancebin=1.0.1',
         containerNameValue:'quay.io/biocontainers/mulled-v2-87f6cdd7eada4e4f6f2fc092e7820d826d5aeeaa:5b8a8a59d2a5385e45cbe82909bf44e7544071f1',
+        dataApi1: 'static/repodata/anaconda/repodata.json', 
+        dataApi2: 'static/repodata/bioconda/repodata.json', 
+        dataApi3: 'static/repodata/conda-forge/repodata.json', 
         resultsTableCol:[
             {
                 title: 'Name',
-                key: 'Name'
+                key: 'name'
             },
             {
                 title: 'Version',
-                key: 'Version'
+                key: 'version'
             },
             {
                 title: 'Channel',
-                key: 'Channel'
+                key: 'channel'
             },
             {
                 title: '',
@@ -94,14 +107,14 @@ export default {
                         */
                         h('Icon', {
                             props: {
-                                type: 'checkmark-round',
+                                type: 'md-add',
                             },
                             style: {
                                 marginLeft: '5px'
                             },
                             on: {
                                 click: () => {
-                                    this.packagesRowClick(params.row);
+                                    this.selectedPackagesRowAdd(params.row);
                                 }
                             }
                         }),
@@ -109,66 +122,15 @@ export default {
                 }
             }
         ],
-        resutls:[
-            {
-                Name: '2pg_cartesian',
-                Version: '1.0.1',
-                Channel: 'bioconda',
-            },
-            {
-                Name: '_license',
-                Version: '1.1',
-                Channel: 'anaconda',
-            },
-            {
-                Name: '_nb_ext_conf',
-                Version: '0.3.0',
-                Channel: 'anaconda',
-            },
-            {
-                Name: 'abawaca',
-                Version: '1.00',
-                Channel: 'bioconda',
-            },
-            {
-                Name: 'abricate',
-                Version: '0.4',
-                Channel: 'bioconda',
-            },
-            {
-                Name: 'abstract-rendering',
-                Version: '0.5.1',
-                Channel: 'anaconda',
-            },
-            {
-                Name: 'abundancebin',
-                Version: '1.0.1',
-                Channel: 'bioconda',
-            },
-            {
-                Name: 'abyss',
-                Version: '2.0.1',
-                Channel: 'bioconda',
-            },
-            {
-                Name: 'abyss-k128',
-                Version: '2.0.1',
-                Channel: 'bioconda',
-            },
-            {
-                Name: 'addict',
-                Version: '2.1.0',
-                Channel: 'conda-forge',
-            },
-        ],
+        resutls:[],
         selectedPackagesTableCol:[
             {
                 title: 'Name',
-                key: 'Name'
+                key: 'name'
             },
             {
                 title: 'Version',
-                key: 'Version'
+                key: 'version'
             },
             {
                 title: '',
@@ -189,14 +151,14 @@ export default {
                         */
                         h('Icon', {
                             props: {
-                                type: 'checkmark-round',
+                                type: 'md-remove',
                             },
                             style: {
                                 marginLeft: '5px'
                             },
                             on: {
                                 click: () => {
-                                    this.selectedPackagesRowClick(params.row);
+                                    this.selectedPackagesRowRemove(params.row);
                                 }
                             }
                         }),
@@ -208,21 +170,24 @@ export default {
     }
   },
   methods:{
-    packagesRowClick(rowItem){
+    selectedPackagesRowAdd(rowItem){
         var found = false;
         for(let i in this.selectedPackagesResutls){
-          if(this.selectedPackagesResutls[i]&&this.selectedPackagesResutls[i].Name.match(rowItem.Name)){
+          if(this.selectedPackagesResutls[i]&&this.selectedPackagesResutls[i].name.match(rowItem.name)){
               found=true;
-              this.containerRepaetedName=rowItem.Name;
+              this.containerRepaetedName=rowItem.name;
               break;
           }
         }
         if(!found){
             var item={
-                Name:rowItem.Name,
-                Version:rowItem.Version
+                name:rowItem.name,
+                version:rowItem.version
             }
             this.selectedPackagesResutls.push(item);
+            this.createContainerValue = this.getContent();
+            this.containerNameValue = this.getContainerName();
+            //this.download();
         }
         else{
           this.containerRepeated=true;
@@ -231,32 +196,128 @@ export default {
             this.containerRepaetedName='';
           },1500)
         }
-        
-        
     },
-    selectedPackagesRowClick(rowItem){
+    selectedPackagesRowRemove(rowItem){
       this.selectedPackagesResutls.splice(rowItem._index, 1);
+      if(this.selectedPackagesResutls.length>0){
+          this.createContainerValue = this.getContent();
+          this.containerNameValue = this.getContainerName();
+          //this.download();
+      }
+    },
+    selectedPackagesClear(){
+      this.selectedPackagesResutls=[];
     },
   	test(){
-  		this.$http
-            .get('/api/get')
-            .then(function(res){
-              console.log(res);
-                console.log(123);
-            },function(err){
+      /*
+      Q.all([this.$http
+            .get(this.dataApi),
+            this.$http
+            .get(this.dataApi),
+            this.$http
+            .get(this.dataApi)]).spread(function(){
 
-            });
+      })*/
+      Promise.all([
+          this.$http.get(this.dataApi1),
+          this.$http.get(this.dataApi2),
+          this.$http.get(this.dataApi3),
+      ]).then((data)=> {
+            let anaconda = this.processData(data[0].body, 'anaconda');
+            let bioconda = this.processData(data[1].body, 'bioconda');
+            let condaforge = this.processData(data[2].body, 'conda-forge');
+            let packages = union(anaconda, bioconda, condaforge);
+            this.loading=false;
+            this.resutls = packages.slice(0,this.pageSize);
+      });
   	},
     pageChange(){
-
     },
     pageSizeChange(){
+    },
+    processData(data, channel) {
+        let packages = [];
+        let index = {};
 
+        each(data.packages, (obj) => {
+            const name = obj.name;
+            const version = obj.version;
+            const packageObject = {
+                name: name,
+                version: version,
+                channel: channel
+            };
+
+            if (Object.keys(index).indexOf(name) === -1) {
+                index[name] = version;
+                packages.push(packageObject);
+            } else {
+                const idx = packages.findIndex((item) => {
+                    return item.name === name;
+                });
+
+                // Always keep the freshest package
+                if (packages[idx].version < version) {
+                    index[name] = version;
+                    packages[idx] = packageObject;
+                }
+            }
+        });
+
+        return packages;
+    },
+    getContent() {
+        return this.selectedPackagesResutls.map((item) => {
+            return item.name + '=' + item.version;
+        }).join();
+    },
+    getContainerName() {
+        let text = '';
+        if (this.selectedPackagesResutls.length === 1) {
+            const target = this.selectedPackagesResutls[0];
+            text = target.name+':'+target.version;
+        } else {
+            const packageNames = this.selectedPackagesResutls.map((item) => item.name);
+            const packageNamesString = packageNames.join('\n');
+            let packageHash = createHash('sha1');
+            packageHash.update(packageNamesString);
+            packageHash = packageHash.digest('hex');
+
+            const packageVersions = this.selectedPackagesResutls.map((item) => item.version || 'null');
+            let versionHash;
+
+            if (packageVersions.length > 0) {
+                const packageVerisonsString = packageVersions.join('\n');
+                versionHash = createHash('sha1');
+                versionHash.update(packageVerisonsString);
+                versionHash = versionHash.digest('hex');
+            } else {
+                versionHash = '';
+            }
+
+            text = 'quay.io/biocontainers/mulled-v2-'+packageHash+':'+versionHash;
+        }
+
+        return text;
+    },
+    
+    download() {
+        let content = this.createContainerValue;
+        let filename = this.containerNameValue + '.tsv';
+        let url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+        let elem = document.createElement('a');
+        elem.setAttribute('href', url);
+        elem.setAttribute('download', filename);
+        document.body.appendChild(elem);
+        elem.click();
+        elem.remove();
     }
   },
   mounted(){
+      setTimeout(() => {
+          this.test();
+      }, 750);
     //console.log('receive id',this.$route.params.id);
-  	//this.test();
   }
 }
 </script>
