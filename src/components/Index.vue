@@ -34,28 +34,41 @@
               </div>
           </div>
           <div class="container-wrapper">
-              <Card v-for="item in cardList" class="card">
-                  <p slot="title">{{item.toolname}}</p>
-                  <p slot="extra">
-                    <Tooltip>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-icon_docker"></use>
-                        </svg>
-                        <div class="tooltip-content" slot="content">
-                            {{item.content}}
+
+            <div>
+              
+            </div>
+              <div v-if="loading" class="spin-container">
+                  <Spin fix></Spin>
+              </div>
+              <div v-else>
+                    <Card v-if="dataFound" v-for="item in cardList" class="card">
+                        <p slot="title">{{item.toolname}}</p>
+                        <p slot="extra">
+                          <Tooltip>
+                              <svg class="icon" aria-hidden="true">
+                                  <use xlink:href="#icon-icon_docker"></use>
+                              </svg>
+                              <div class="tooltip-content" slot="content">
+                                  {{item.content}}
+                              </div>
+                          </Tooltip>
+                        </p>
+                        <div class="description-wrapper">
+                          {{item.description}}
                         </div>
-                    </Tooltip>
-                  </p>
-                  <div class="description-wrapper">
-                    {{item.description}}
-                  </div>
-                  <div v-for="tag in item.tags" class="tag-wrapper">
-                      <Tag color="default">{{tag}}</Tag>
-                  </div>
-                  <div class="state-wrapper">
-                      {{item.state}}
-                  </div>
-              </Card>
+                        <div v-for="tag in item.tags" class="tag-wrapper">
+                            <Tag color="default">{{tag}}</Tag>
+                        </div>
+                        <div class="state-wrapper">
+                            {{item.state}}
+                        </div>
+                    </Card>
+                    <div v-else class="no-data-container">
+                        No Data...
+                    </div>
+              </div>
+              
           </div>
           <div class="page-wrapper">
               <Page :total="total" :current="current" :page-size="pageSize" size="small" show-elevator show-sizer @on-change="pageChange" @on-page-size-change="pageSizeChange"/>
@@ -91,10 +104,12 @@ export default {
   data () {
     return {
         keywords:'',
-        total:'',
+        total:1000,
         current:1,
         pageSize:30,
         cardList:[],
+        loading:true,
+        dataFound:false,
         filter:'All',
         resultsTableCol:[
             {
@@ -233,6 +248,9 @@ export default {
           }
     },
     search(){
+        this.loading=true;
+        this.dataFound=false;
+        this.cardList=[];
         var query={};
         if(this.filter == 'Description')
          query.description = this.keywords;
@@ -247,20 +265,36 @@ export default {
             .get(this.$store.state.baseApiURL + '/api/v2/tools',{params:query})
             .then(function(res){
               //this.total = res.body.length;
+              console.log(res);
+              console.log('this.cardList.length',this.cardList.length);
               this.total = 1000;
               let tempLength = res.body.length>30?30:res.body.length;
-              for(let i=0; i<tempLength; i++){
-                console.log(res.body[i])
-                var item = {
-                  toolname:res.body[i].toolname.toUpperCase(),
-                  description:res.body[i].description,
-                  tags:['tag1','tag2','tag2'],
-                  state:'Not yet'
-                }
-                this.cardList.push(item)
+              if(tempLength > 0){
+                  for(let i=0; i<tempLength; i++){
+                      //console.log(res.body[i])
+                      var item = {
+                        toolname:res.body[i].toolname.toUpperCase(),
+                        description:res.body[i].description,
+                        tags:['tag1','tag2','tag2'],
+                        state:'Not yet'
+                      }
+                      this.cardList.push(item);
+                      
+                  }
+                  this.dataFound=true;
               }
+              else{
+                this.dataFound=false;
+              }
+              this.loading=false;
             },function(err){
-
+                console.log('err',err);
+                this.dataFound=false;
+                this.loading=false;
+                this.$Notice.error({
+                    title: 'Server Error',
+                    desc: err.body.error
+                });
             });
     },
     pageChange(page){
@@ -329,6 +363,17 @@ export default {
       height: 30px;
       /*background-image:url('static/triangle.svg');*/
     }
+    .spin-container{
+      display: inline-block;
+      width: 100%;
+      height: 100px;
+      position: relative;
+    }
+    .no-data-container{
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+    }
     .content-wrapper{
       width: 80%;
       padding-right: 15px;
@@ -349,6 +394,7 @@ export default {
       font-weight: 300;
     }
     .content{
+      position: relative;
       min-height: 300px;
       margin-bottom: 6rem;
       font-size: 1.1rem;
@@ -356,6 +402,7 @@ export default {
       width: 80%;
       margin-right: auto;
       margin-left: auto;
+
     }
     .content h1{
       border-bottom: 1px solid #e4973e;
