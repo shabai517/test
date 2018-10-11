@@ -11,7 +11,7 @@
               <Card class="card">
                   <p slot="title">Packages</p>
                   <div class="search-wrapper">
-                    <Input v-model="keywords" icon="ios-search" placeholder="Search" style="width:100%"></Input>
+                    <Input v-model="keywords" icon="ios-search" placeholder="Search" style="width:100%" @on-change="search"></Input>
                   </div>
                   <Table stripe :columns="resultsTableCol" :data="resutls" :loading="loading"></Table>
                   <div class="page-wrapper">
@@ -64,6 +64,7 @@ export default {
         current:1,
         pageSize:10, 
         loading:true,
+        packages:[],
         content:'',
         containerName:'',
         containerRepeated:false,
@@ -227,18 +228,31 @@ export default {
             let bioconda = this.processData(data[1].body, 'bioconda');
             let condaforge = this.processData(data[2].body, 'conda-forge');
             let packages = union(anaconda, bioconda, condaforge);
+            this.packages = packages;
             this.loading=false;
             this.resutls = packages.slice(0,this.pageSize);
       });
   	},
-    pageChange(){
+    pageChange(page){
+        this.resutls=[];
+        let start = page * this.pageSize;
+        let end = start + this.pageSize;
+        this.resutls = this.packages.slice(start,end);
     },
-    pageSizeChange(){
+    pageSizeChange(pageSize){
+      this.resutls=[];
+      console.log('pageSizeChange',pageSize);
+      console.log('this.current',this.current);
+      let start = 0;
+      let end = pageSize;
+      console.log('start',start);
+      console.log('end',end);
+      this.resutls = this.packages.slice(start,end);
+      console.log('this.resutls',this.resutls);
     },
     processData(data, channel) {
         let packages = [];
         let index = {};
-
         each(data.packages, (obj) => {
             const name = obj.name;
             const version = obj.version;
@@ -300,7 +314,6 @@ export default {
 
         return text;
     },
-    
     download() {
         let content = this.createContainerValue;
         let filename = this.containerNameValue + '.tsv';
@@ -311,6 +324,20 @@ export default {
         document.body.appendChild(elem);
         elem.click();
         elem.remove();
+    },
+    search(){
+      console.log('search',this.keywords);
+      if(this.keywords==''){
+        this.resutls = this.packages.slice(0,this.pageSize);
+        return;
+      }
+      if(this.packages.length>0){
+          this.resutls = [];
+          for(let i=0; i<100;i++){
+              if(this.packages[i].name.match(this.keywords) || this.packages[i].version.match(this.keywords) || this.packages[i].channel.match(this.keywords))
+                this.resutls.push(this.packages[i])
+          }
+      }
     }
   },
   mounted(){
