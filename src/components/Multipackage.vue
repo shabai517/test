@@ -15,7 +15,10 @@
                   </div>
                   <Table stripe :columns="resultsTableCol" :data="resutls" :loading="loading"></Table>
                   <div class="page-wrapper">
+                    <!--
                       <Page :total="total" :current="current" :page-size="pageSize" size="small" show-elevator show-sizer @on-change="pageChange" @on-page-size-change="pageSizeChange"/>
+                    -->
+                      <Page :total="total" :current="current" :page-size="pageSize" size="small"  @on-change="pageChange"/>
                   </div>
               </Card>
           </div>
@@ -60,7 +63,7 @@ export default {
   data () {
     return {
         keywords:'',
-        total:5598,
+        total:0,
         current:1,
         pageSize:10, 
         loading:true,
@@ -228,12 +231,18 @@ export default {
             let bioconda = this.processData(data[1].body, 'bioconda');
             let condaforge = this.processData(data[2].body, 'conda-forge');
             let packages = union(anaconda, bioconda, condaforge);
-            this.packages = packages;
+
+            this.packages = packages.sort((a,b)=>{
+              return a.name.localeCompare(b.name);
+            });
+            console.log(packages);
             this.loading=false;
+            this.total = this.packages.length;
             this.resutls = packages.slice(0,this.pageSize);
       });
   	},
     pageChange(page){
+        page = page - 1;
         this.resutls=[];
         let start = page * this.pageSize;
         let end = start + this.pageSize;
@@ -329,14 +338,19 @@ export default {
       console.log('search',this.keywords);
       if(this.keywords==''){
         this.resutls = this.packages.slice(0,this.pageSize);
+        this.total = this.packages.length;
         return;
       }
       if(this.packages.length>0){
+          var temp=[];
           this.resutls = [];
-          for(let i=0; i<100;i++){
+          console.time('aaa');
+          for(let i=0; i<this.packages.length;i++){
               if(this.packages[i].name.match(this.keywords) || this.packages[i].version.match(this.keywords) || this.packages[i].channel.match(this.keywords))
-                this.resutls.push(this.packages[i])
+                temp.push(this.packages[i])
           }
+          this.total=temp.length;
+          this.resutls = temp.slice(0,this.pageSize);
       }
     }
   },
@@ -403,6 +417,7 @@ export default {
     }
     .page-wrapper{
       margin-top: 10px;
+      /*padding: 0 30px;*/
     }
     .card p{
       text-align: left;
