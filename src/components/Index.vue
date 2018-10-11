@@ -17,15 +17,17 @@
                   <div class="filter">
                         <span class="name">Filters:</span>
                         <ButtonGroup>
-                            <Button v-for="(item ,index) in filters" :type="item.type" :key="index" @click="filterClick(index)">{{item.name}}</Button>
+                            <Button class="filter-button" v-for="(item ,index) in filters" :type="item.type" :key="index" @click="filterClick(index)">{{item.name}}</Button>
                         </ButtonGroup>
                   </div>
+                  <!--
                   <div class="sort">
                         <span class="name">Sort:</span>
                         <ButtonGroup>
                             <Button v-for="(item ,index) in sorts" :type="item.type" :key="index" @click="sortClick(index)">{{item.name}}</Button>
                         </ButtonGroup>
                   </div>
+                  -->
               </div>
               <div class="search-button-wrapper">
                   <Button type="primary" @click="search">Search</Button>
@@ -91,6 +93,7 @@ export default {
         current:1,
         pageSize:30,
         cardList:[],
+        filter:'All',
         resultsTableCol:[
             {
                 title: 'Container',
@@ -165,21 +168,17 @@ export default {
                 type:'primary',
             },
             {
-                name:'Cancel',
+                name:'ID',
                 type:'default',
             },
             {
-                name:'Confirm',
+                name:'Name',
                 type:'default',
             },
             {
-                name:'Confirm',
+                name:'Description',
                 type:'default',
             },
-            {
-                name:'Confirm',
-                type:'default',
-            }
         ],
         sorts:[
             {
@@ -202,38 +201,25 @@ export default {
       console.log('row',row);
         this.$router.push({name:'Containerdetails',params:{id:row.ID}});
     },
-  	test(){
-      console.log('this.$store.state.baseApiURL',this.$store)
-  		this.$http
-            .get(this.$store.state.baseApiURL + '/api/v2/tools')
-            .then(function(res){
-              this.total = res.body.length;
-              for(let i=0; i<30; i++){
-                console.log(res.body[i])
-                var item = {
-                  toolname:res.body[i].toolname,
-                  description:res.body[i].description,
-                  tags:['tag1','tag2','tag2'],
-                  state:'Not yet'
-                }
-                this.cardList.push(item)
-              }
-            },function(err){
-
-            });
-  	},
     filterClick(index){
         if(index == 0){
           for(let i in this.filters){
-              if(i == index)
+              if(i == index){
+                this.filter = this.filters[i].name;
                 this.filters[i].type = 'primary';
+              }
               else
                 this.filters[i].type = 'default';
           }
         }
         else{
             this.filters[0].type = 'default';
-            this.filters[index].type = this.filters[index].type == 'primary' ? 'default' : 'primary';
+            if(this.filters[index].type == 'primary')
+                this.filters[index].type = 'default';
+            else{ 
+                this.filter = this.filters[index].name;
+                this.filters[index].type = 'primary';
+            } 
         }
     },
     sortClick(index){
@@ -245,7 +231,34 @@ export default {
           }
     },
     search(){
-        console.log('search');
+        var query={};
+        if(this.filter == 'Description')
+         query.description = this.keywords;
+        else if(this.filter == 'ID')
+          query.id = this.keywords;
+        else if(this.filter == 'Name')
+          query.name = this.keywords;
+        else if(this.filter == 'All')
+          query={}
+
+        this.$http
+            .get(this.$store.state.baseApiURL + '/api/v2/tools',{params:query})
+            .then(function(res){
+              //this.total = res.body.length;
+              this.total = 1000;
+              for(let i=0; i<30; i++){
+                console.log(res.body[i])
+                var item = {
+                  toolname:res.body[i].toolname.toUpperCase(),
+                  description:res.body[i].description,
+                  tags:['tag1','tag2','tag2'],
+                  state:'Not yet'
+                }
+                this.cardList.push(item)
+              }
+            },function(err){
+
+            });
     },
     pageChange(page){
       console.log('page',page);
@@ -255,7 +268,7 @@ export default {
     }
   },
   mounted(){
-  	this.test();
+  	this.search();
   }
 }
 </script>
@@ -374,6 +387,9 @@ export default {
     .page-wrapper{
       text-align: center;
       font-size: 12px;
+    }
+    .filter-button{
+      min-width: 70px;
     }
     @media (max-width: 840px) { 
       .card{ 
