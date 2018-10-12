@@ -50,7 +50,7 @@
                   -->   
             </div>
             <div class="card-content-wrapper">
-                      <Card v-for="item in containerObj.images" class="card">
+                      <Card dis-hover v-for="item in containerObj.images" class="card">
                             <p slot="title">Container Images</p>
                             <div>
                                 <span>Tag: </span><span>{{item.tag}}</span>
@@ -425,7 +425,7 @@ export default {
     }
     .title-container{
         width: 100%;
-        margin: 0 auto;
+        margin: 0 auto 10px auto;
         display: flex;
         justify-content: space-between;
     }
