@@ -54,15 +54,23 @@
                               </div>
                           </Tooltip>
                         </p>
-                        <div class="description-wrapper">
-                          {{item.description}}
-                        </div>
-                        <div v-for="tag in item.tags" class="tag-wrapper">
-                            <Tag color="default">{{tag}}</Tag>
-                        </div>
-                        <div class="state-wrapper">
-                            {{item.state}}
-                        </div>
+                        <div class="card-content-wrapper">
+                          <div class="left">
+                              <div class="description-wrapper">
+                                {{item.description}}
+                              </div>
+                              <!--
+                              <div v-for="tag in item.tags" class="tag-wrapper">
+                                  <Tag color="default">{{tag}}</Tag>
+                              </div>-->
+                              <div class="state-wrapper">
+                                  {{item.state}}
+                              </div>
+                          </div>
+                          <div class="right">
+                              <Icon type="md-checkmark" :color="item.color"/>
+                          </div>
+                        </div> 
                     </Card>
                     <div v-else class="no-data-container">
                         No Data...
@@ -271,12 +279,13 @@ export default {
               let tempLength = res.body.length>30?30:res.body.length;
               if(tempLength > 0){
                   for(let i=0; i<tempLength; i++){
-                      //console.log(res.body[i])
+                      console.log(res.body[i])
                       var item = {
                         toolname:res.body[i].toolname.toUpperCase(),
                         description:res.body[i].description,
                         tags:['tag1','tag2','tag2'],
-                        state:'Not yet'
+                        state:'Not yet',
+                        color:res.body[i].verified ? '#19be6b': '#c5c8ce',
                       }
                       this.cardList.push(item);
                       
@@ -403,6 +412,15 @@ export default {
       margin-right: auto;
       margin-left: auto;
 
+    }
+    .card-content-wrapper{
+      display: flex;
+      justify-content: space-between;
+    }
+    .card-content-wrapper .right{
+      display: flex;
+      align-items: center;
+      font-size: 30px;
     }
     .content h1{
       border-bottom: 1px solid #e4973e;
