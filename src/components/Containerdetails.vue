@@ -34,16 +34,26 @@
               </div>
           </div>
           <div class="container-wrapper">
-              <div v-for="item in cardList" class="card">
+              <div class="card">
                   <div class="title-wrapper">
                       <div class="card-title">
-                          {{item.name}}
+                          {{containerObj.name}}:{{containerObj.version}}
                       </div>
                       <div class="title-line"></div>
                   </div>
                   <div class="card-content-wrapper">
-                      <div>{{item.Value}}</div>
-                      <div>{{item.Value}}</div>
+                      <Card v-for="item in containerObj.images">
+                            <p slot="title">Container Images</p>
+                            <div>
+                                <span>Tag: </span><span>{{item.tag}}</span>
+                            </div>
+                            <div>
+                                <span>FullTag: </span><span>{{item.fullTag}}</span>
+                            </div>
+                            <div>
+                                <span>Size: </span><span>{{item.size}}</span>
+                            </div>
+                      </Card>
                   </div>
               </div>
           </div>
@@ -81,7 +91,11 @@ export default {
         total:1000,
         current:1,
         pageSize:30,
-        cardList:[],
+        containerObj:{
+            name:'',
+            version:'',
+            image:[]
+        },
         loading:true,
         dataFound:false,
         filter:'All',
@@ -275,37 +289,22 @@ export default {
     containerID(){
             console.log('this.$router.params.id',this.$route.params.id);
          this.$http
-            .get(this.$store.state.baseApiURL + '/api/v2/tools/'+ this.$route.params.id)
+            .get(this.$store.state.baseApiURL + '/api/v2/tools/'+ this.$route.params.id+'/versions')
             .then(function(res){
-                        console.log('res.body',res.body);
-                      var item = {
-                        name:'Name',
-                        Value:res.body.toolname.toUpperCase(),
+                      console.log('res.body',res.body);
+                      this.containerObj = {
+                        name:res.body.name.toUpperCase(),
+                        version:res.body.meta_version,
+                        image:[]
                       }
-                      this.cardList.push(item);
-                      var item = {
-                        name:'Description',
-                        Value:res.body.toolname.toUpperCase(),
+                      for(let i=0; i<res.body.container_images.length; i++){
+                        var item = {
+                            tag:res.body.container_images[i].tag,
+                            fullTag:res.body.container_images[i].fullTag,
+                            size: Math.round(res.body.container_images[i].size/1024/1024),
+                        }
+                        this.containerObj.image.push(item);
                       }
-                      this.cardList.push(item);
-                      var item = {
-                        name:'Author',
-                        Value:res.body.toolname.toUpperCase(),
-                      }
-                      this.cardList.push(item);
-                      var item = {
-                        name:'State',
-                        Value:res.body.toolname.toUpperCase(),
-                      }
-                      this.cardList.push(item);
-                      var item = {
-                        name:'XXX',
-                        Value:res.body.toolname.toUpperCase(),
-                      }
-                      this.cardList.push(item);
-                      
-                      
-                  
               //this.total = res.body.length;
               /*console.log(res);
               console.log('this.cardList.length',this.cardList.length);
