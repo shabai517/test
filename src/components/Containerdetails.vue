@@ -37,18 +37,20 @@
             <div class="title-container">
                   <div class="title-wrapper">
                       <div class="card-title">
-                          Name:{{containerObj.name}}
+                        <span>Name:{{containerObj.name}}</span>
+                        <span>Version:{{containerObj.version}}</span>
                       </div>
                   </div>
+                  <!--
                   <div class="title-wrapper">
                       <div class="card-title">
-                          Version:{{containerObj.version}}
+                        <span>Images</span>
                       </div>
                   </div>
-            </div>
+                  -->
                   <div class="card-content-wrapper">
                       <Card v-for="item in containerObj.images" class="card">
-                            <p slot="title">Container Images: {{containerObj.version}}</p>
+                            <p slot="title">Container Images</p>
                             <div>
                                 <span>Tag: </span><span>{{item.tag}}</span>
                             </div>
@@ -60,8 +62,9 @@
                             </div>
                       </Card>
                   </div>
-            
+            </div>
           </div>
+          
       </div>
       <!--
       <div class="results-wrapper">
@@ -438,6 +441,8 @@ export default {
     .card-title{
         margin:0 5px;
         font-size: 14px;
+        display: flex;
+        justify-content: space-between;
     }
     .content-wrapper{
       width: 80%;
@@ -496,10 +501,10 @@ export default {
       display: inline-block;
     }
     .card{
-      display: inline-block;
+      width: 100%;
       margin: 0 15px;
       margin-bottom: 30px;
-      min-height: 200px;
+      min-height: 100px;
       overflow: hidden;
       transition: all 0.15s ease-out;
       -webkit-transition: all 0.15s ease-out;
@@ -515,6 +520,7 @@ export default {
     .filter-button{
       min-width: 70px;
     }
+    /*
     @media (max-width: 840px) { 
       .card{ 
         width: calc((100% - 0px) / 1 - 3px);
@@ -545,7 +551,7 @@ export default {
       .container-wrapper{
         
       }
-    }
+    }*/
    
 </style>
 
