@@ -277,29 +277,30 @@ export default {
          this.$http
             .get(this.$store.state.baseApiURL + '/api/v2/tools/'+ this.$route.params.id)
             .then(function(res){
+                        console.log('res.body',res.body);
                       var item = {
                         name:'Name',
-                        Value:res.body[i].toolname.toUpperCase(),
+                        Value:res.body.toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
                       var item = {
                         name:'Description',
-                        Value:res.body[i].toolname.toUpperCase(),
+                        Value:res.body.toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
                       var item = {
                         name:'Author',
-                        Value:res.body[i].toolname.toUpperCase(),
+                        Value:res.body.toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
                       var item = {
                         name:'State',
-                        Value:res.body[i].toolname.toUpperCase(),
+                        Value:res.body.toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
                       var item = {
                         name:'XXX',
-                        Value:res.body[i].toolname.toUpperCase(),
+                        Value:res.body.toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
                       
