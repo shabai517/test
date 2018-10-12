@@ -34,16 +34,16 @@
               </div>
           </div>
           <div class="container-wrapper">
-              <div class="card">
+              <div v-for="item in cardList" class="card">
                   <div class="title-wrapper">
                       <div class="card-title">
-                          Document
+                          {{item.name}}
                       </div>
                       <div class="title-line"></div>
                   </div>
                   <div class="card-content-wrapper">
-                      <div>aaaa</div>
-                      <div>bbbb</div>
+                      <div>{{item.Value}}</div>
+                      <div>{{item.Value}}</div>
                   </div>
               </div>
           </div>
@@ -277,26 +277,29 @@ export default {
          this.$http
             .get(this.$store.state.baseApiURL + '/api/v2/tools/'+ this.$route.params.id)
             .then(function(res){
-                
                       var item = {
-                        toolname:res.body[i].toolname.toUpperCase(),
+                        name:'Name',
+                        Value:res.body[i].toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
                       var item = {
-                        toolname:res.body[i].toolname.toUpperCase(),
+                        name:'Description',
+                        Value:res.body[i].toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
-                       var item = {
-                       
-                        toolname:res.body[i].toolname.toUpperCase(),
+                      var item = {
+                        name:'Author',
+                        Value:res.body[i].toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
-                       var item = {
-                        toolname:res.body[i].toolname.toUpperCase(),
+                      var item = {
+                        name:'State',
+                        Value:res.body[i].toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
-                       var item = {
-                        toolname:res.body[i].toolname.toUpperCase(),
+                      var item = {
+                        name:'XXX',
+                        Value:res.body[i].toolname.toUpperCase(),
                       }
                       this.cardList.push(item);
                       
