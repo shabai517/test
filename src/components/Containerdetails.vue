@@ -292,16 +292,17 @@ export default {
             .get(this.$store.state.baseApiURL + '/api/v2/tools/'+ this.$route.params.id+'/versions')
             .then(function(res){
                       console.log('res.body',res.body);
+                      let resbody=res.body[0];
                       this.containerObj = {
-                        name:res.body.name.toUpperCase(),
-                        version:res.body.meta_version,
+                        name:resbody.name.toUpperCase(),
+                        version:resbody.meta_version,
                         image:[]
                       }
-                      for(let i=0; i<res.body.container_images.length; i++){
+                      for(let i=0; i<resbody.container_images.length; i++){
                         var item = {
-                            tag:res.body.container_images[i].tag,
-                            fullTag:res.body.container_images[i].fullTag,
-                            size: Math.round(res.body.container_images[i].size/1024/1024),
+                            tag:resbody.container_images[i].tag,
+                            fullTag:resbody.container_images[i].fullTag,
+                            size: Math.round(resbody.container_images[i].size/1024/1024),
                         }
                         this.containerObj.image.push(item);
                       }
