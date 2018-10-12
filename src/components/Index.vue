@@ -34,16 +34,12 @@
               </div>
           </div>
           <div class="container-wrapper">
-
-            <div>
-              
-            </div>
               <div v-if="loading" class="spin-container">
                   <Spin fix></Spin>
               </div>
               <div v-else>
                     <Card v-if="dataFound" v-for="item in cardList" class="card">
-                        <p slot="title">{{item.toolname}}</p>
+                        <p slot="title"><a @click="gotoContainerDetails(item.toolname)">{{item.toolname}}</a></p>
                         <p slot="extra">
                           <Tooltip>
                               <!--
@@ -284,6 +280,7 @@ export default {
                   for(let i=0; i<tempLength; i++){
                       console.log(res.body[i])
                       var item = {
+                        id:res.body[i].id,
                         toolname:res.body[i].toolname.toUpperCase(),
                         description:res.body[i].description,
                         tags:['tag1','tag2','tag2'],
@@ -314,6 +311,11 @@ export default {
     },
     pageSizeChange(pageSize){
       console.log('pageSize',pageSize);
+    },
+    gotoContainerDetails(id){
+      console.log('ididididid',id);
+      //this.$router.push({name:'dataset',params:{id:id}});
+      this.$router.push({name:'ContainerDetails',params:{id:id}});
     }
   },
   mounted(){
