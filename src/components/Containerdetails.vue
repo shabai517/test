@@ -34,16 +34,21 @@
               </div>
           </div>
           <div class="container-wrapper">
-              <div class="card">
+            <div class="title-container">
                   <div class="title-wrapper">
                       <div class="card-title">
-                          {{containerObj.name}}:{{containerObj.version}}
+                          Name:{{containerObj.name}}
                       </div>
-                      <div class="title-line"></div>
                   </div>
+                  <div class="title-wrapper">
+                      <div class="card-title">
+                          Version:{{containerObj.version}}
+                      </div>
+                  </div>
+            </div>
                   <div class="card-content-wrapper">
-                      <Card v-for="item in containerObj.images">
-                            <p slot="title">Container Images</p>
+                      <Card v-for="item in containerObj.images" class="card">
+                            <p slot="title">Container Images: {{containerObj.version}}</p>
                             <div>
                                 <span>Tag: </span><span>{{item.tag}}</span>
                             </div>
@@ -55,7 +60,7 @@
                             </div>
                       </Card>
                   </div>
-              </div>
+            
           </div>
       </div>
       <!--
@@ -94,7 +99,7 @@ export default {
         containerObj:{
             name:'',
             version:'',
-            image:[]
+            images:[]
         },
         loading:true,
         dataFound:false,
@@ -296,7 +301,7 @@ export default {
                       this.containerObj = {
                         name:resbody.name.toUpperCase(),
                         version:resbody.meta_version,
-                        image:[]
+                        images:[]
                       }
                       for(let i=0; i<resbody.container_images.length; i++){
                         var item = {
@@ -304,7 +309,7 @@ export default {
                             fullTag:resbody.container_images[i].fullTag,
                             size: Math.round(resbody.container_images[i].size/1024/1024),
                         }
-                        this.containerObj.image.push(item);
+                        this.containerObj.images.push(item);
                       }
               //this.total = res.body.length;
               /*console.log(res);
@@ -415,16 +420,22 @@ export default {
       text-align: center;
       font-size: 14px;
     }
-    .card .card-content-wrapper{
+    .title-container{
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+    }
+    .title-wrapper{
         border: 1px solid #eee;
         border-left-width: 4px;
         border-radius: 4px;
-        margin-right: 5px;
-        margin-left: 5px;
         margin-bottom: 4px;
         padding: 7px 15px;
+        display: inline-block;
+        width: 45%;
     }
-    .card .card-title{
+    .card-title{
         margin:0 5px;
         font-size: 14px;
     }
@@ -507,8 +518,7 @@ export default {
     @media (max-width: 840px) { 
       .card{ 
         width: calc((100% - 0px) / 1 - 3px);
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+       
       }
     }
     @media (max-width: 1015px) and (min-width: 841px){ 
@@ -517,8 +527,7 @@ export default {
 
       }
       .container-wrapper{
-        margin-left: -15px;
-        margin-right: -15px;
+       
       }
     }
     @media (max-width: 1510px) and (min-width: 1016px){ 
@@ -526,8 +535,7 @@ export default {
         width: calc((100% - 90px) / 3 - 4px);
       }
       .container-wrapper{
-        margin-left: -15px;
-        margin-right: -15px;
+        
       }
     }
     @media (max-width: 3910px) and (min-width: 1511px){ 
@@ -535,8 +543,7 @@ export default {
         width: calc((100% - 120px) / 4 - 4px);
       }
       .container-wrapper{
-        margin-left: -15px;
-        margin-right: -15px;
+        
       }
     }
    
