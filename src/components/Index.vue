@@ -46,9 +46,12 @@
                         <p slot="title">{{item.toolname}}</p>
                         <p slot="extra">
                           <Tooltip>
+                              <!--
                               <svg class="icon" aria-hidden="true">
                                   <use xlink:href="#icon-icon_docker"></use>
                               </svg>
+                              -->
+                              <Icon type="logo-codepen" size="22"/>
                               <div class="tooltip-content" slot="content">
                                   {{item.content}}
                               </div>
@@ -419,7 +422,7 @@ export default {
     }
     .card-content-wrapper .right{
       display: flex;
-      align-items: center;
+      align-items: end;
       font-size: 30px;
     }
     .content h1{
