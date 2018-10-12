@@ -39,7 +39,7 @@
               </div>
               <div v-else>
                     <Card v-if="dataFound" v-for="item in cardList" class="card">
-                        <p slot="title"><a @click="gotoContainerDetails(item.toolname)">{{item.toolname}}</a></p>
+                        <p slot="title"><a @click="gotoContainerDetails(item.id)">{{item.toolname}}</a></p>
                         <p slot="extra">
                           <Tooltip>
                               <!--
