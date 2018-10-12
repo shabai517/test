@@ -47,8 +47,9 @@
                         <span>Images</span>
                       </div>
                   </div>
-                  -->
-                  <div class="card-content-wrapper">
+                  -->   
+            </div>
+            <div class="card-content-wrapper">
                       <Card v-for="item in containerObj.images" class="card">
                             <p slot="title">Container Images</p>
                             <div>
@@ -62,7 +63,6 @@
                             </div>
                       </Card>
                   </div>
-            </div>
           </div>
           
       </div>
@@ -436,7 +436,7 @@ export default {
         margin-bottom: 4px;
         padding: 7px 15px;
         display: inline-block;
-        width: 45%;
+        width: 100%;
     }
     .card-title{
         margin:0 5px;
@@ -502,7 +502,6 @@ export default {
     }
     .card{
       width: 100%;
-      margin: 0 15px;
       margin-bottom: 30px;
       min-height: 100px;
       overflow: hidden;
