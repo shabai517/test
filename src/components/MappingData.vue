@@ -44,6 +44,14 @@ export default {
   name: 'MappingData',
   data () {
     return {
+        QUAY_ORGANIZATION:"https://quay.io/api/v1/repository?namespace=biocontainers&popularity=true&last_modified=true",
+        RetrieveGitHubIssuesAPI1:"https://api.github.com/repos/biocontainers/containers/issues?state=all&per_page=100",
+        RetrieveGitHubIssuesAPI2:"https://api.github.com/repos/biocontainers/specs/issues?state=all&per_page=100",
+        RetrieveGitHubIssuesAPI3:"https://api.github.com/repos/biocontainers/specs/issues/comments?per_page=100",
+        RetrieveGitHubIssuesAPI4:"https://api.github.com/repos/biocontainers/containers/issues/comments?per_page=100",
+        dates:{},
+        githubdates:[],
+        githubDatesMap:[],
         keywords:'',
         resultsTableCol:[
             {
@@ -165,11 +173,103 @@ export default {
 
             });
   	},
+    retrieveGitHubIssues(){
+      let promise1 = this.$http.get(this.RetrieveGitHubIssuesAPI1);
+      let promise2 = this.$http.get(this.RetrieveGitHubIssuesAPI2)
+      let promise3 = this.$http.get(this.RetrieveGitHubIssuesAPI3)
+      let promise4 = this.$http.get(this.RetrieveGitHubIssuesAPI4)
+           
+      Promise.all([promise1, promise2, promise3, promise4]).then(([v1,v2,v3,v4]) => {
+        console.log('v1',v1.data);
+        let data1 = v1.data;
+        let data2 = v2.data;
+        let data3 = v3.data;
+        let data4 = v4.data;
+        console.log('v1.data',v1.data)
+        for(let i in data1){
+            let createAt   = new Date(data1[i].created_at).toLocaleDateString();
+            let modifiedAt = new Date(data1[i].updated_at).toLocaleDateString();
+            let closeAt    = new Date(data1[i].close_at).toLocaleDateString();
+            this.githubdates.push(createAt);
+            this.githubdates.push(modifiedAt);
+            this.githubdates.push(closeAt);
+        }
+
+        for(let i in data2){
+            let createAt   = new Date(data2[i].created_at).toLocaleDateString();
+            let modifiedAt = new Date(data2[i].updated_at).toLocaleDateString();
+            let closeAt    = new Date(data2[i].close_at).toLocaleDateString();
+            this.githubdates.push(createAt);
+            this.githubdates.push(modifiedAt);
+            this.githubdates.push(closeAt);
+        }
+
+        for(let i in data3){
+            let createAt   = new Date(data3[i].created_at).toLocaleDateString();
+            let modifiedAt = new Date(data3[i].updated_at).toLocaleDateString();
+            let closeAt    = new Date(data3[i].close_at).toLocaleDateString();
+            this.githubdates.push(createAt);
+            this.githubdates.push(modifiedAt);
+            this.githubdates.push(closeAt);
+        }
+
+        for(let i in data4){
+            let createAt   = new Date(data4[i].created_at).toLocaleDateString();
+            let modifiedAt = new Date(data4[i].updated_at).toLocaleDateString();
+            let closeAt    = new Date(data4[i].close_at).toLocaleDateString();
+            this.githubdates.push(createAt);
+            this.githubdates.push(modifiedAt);
+            this.githubdates.push(closeAt);
+        }
+       
+        for(let i in this.githubdates){
+            var parts = this.githubdates[i].split('/');
+            var dateNumber = new Date(parts[2]+"-"+parts[1]+"-"+parts[0]).getTime()/1000;
+            var num = Math.floor(dateNumber);
+            if(!isNaN(num)) {
+                this.githubDatesMap[num.toString()] = this.githubDatesMap[num.toString()] ? this.githubDatesMap[num.toString()]+1 : 1;
+            }
+            //console.log('this.githubDatesMap',this.githubDatesMap);
+        }
+      })
+    },
+    retrieveQuayIO(){
+      this.$http
+            .get(this.QUAY_ORGANIZATION,{headers: {'X-Requested-With' :'XMLHttpRequest','Authorization': "Bearer "+ "XRYLsxvQqmQLpP7RrajpFdiZntveNEyiffXyibK0"}})
+            .then(function(res){
+              console.log('retrieveQuayIO',res);
+              let repositories = res.body.repositories
+                for(let i in repositories){
+                   let item = {
+                      domain: "quay.io/biocontainers/",
+                      name: repositories[i].name, 
+                      description: repositories[i].description, 
+                      lastModified: repositories[i].last_modified, 
+                      number_pull: [repositories[i].popularity, 50], 
+                      start_count:repositories[i].is_starred
+                   }
+
+                   let num = Math.floor(repositories[i].last_modified/1000)
+                   if(!isNaN(num))
+                      this.dates[num.toString()] = this.dates[num.toString()] ? this.dates[num.toString()]+1:1;
+                }
+
+              
+
+                console.log('this.dates',this.dates);
+            },function(err){
+              console.log('err',err);
+            });
+    },
     search(){
         console.log('search');
+        
     }
   },
   mounted(){
+
+    this.retrieveQuayIO();
+    this.retrieveGitHubIssues();
   	//this.test();
   }
 }
